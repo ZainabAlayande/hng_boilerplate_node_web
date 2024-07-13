@@ -1,256 +1,103 @@
-# [App Name] Integration Documentation
+# API and Database Design for HNG Boilerplate Project
 
-## Overview
+## API Design
 
-[Description]
+This project uses Swagger/OpenAPI to design the APIs. A minimal list of the API description is listed below: 
 
-## Folder Structure
+### API Base url: [here](link-to-swagger-documentation)
 
-```
-|--- src
-|    |--- controllers
-|    |--- database
-|    |--- interfaces
-|    |--- middlewares
-|    |--- routes
-|    |--- services
-|    |--- utils
-|    |--- server.ts
-|--- .env
-|--- app.ts
-|--- .gitignore
-|--- package.json
-|--- tsconfig.json
-```
+### Endpoints
 
-## Dependencies (Dev)
+- **POST /auth/register**: Create a new user.
+- **POST /auth/login**: Login a user.
+- **POST /auth/social**: Create new user by social authentication.
+- **POST /auth/magic-link**: Magic link login.
+- **POST /auth/change-password**: Change user password
+- **POST /email/send**: Send a mail to user
+- **POST /payments/stripe**: Process a Stripe Payment
+- **POST /payments/flutterwave**: Process a Flutterwave payment
+- **POST /payments/lemonsqueezy**: Process a LemonSqueezy payment
+- **GET /users**: Get a list of users
+- **GET /users/{id}**: Get user by ID
 
-- Node.js
-- TypeScript
-- Express
-- ts-node-dev
-- [Other dependencies]
 
-## Getting Started
+#### For detailed API specifications, refer to the [OpenAPI Specification](link-to-openapi-spec).
 
-Before you begin, ensure you have the following installed on your machine:
+## Database Design
 
-- [Node.js](https://nodejs.org/) (v14 or later)
-- [npm](https://www.npmjs.com/) (Node Package Manager, included with Node.js)
-- [Git](https://git-scm.com/)
+The database design is created using draw.io. The Entity Relation Diagram can be viewed below:
 
-## Contribution Guide
 
-## Getting Started
+### Entities
 
-#### If you don't have git on your machine, [install it](https://docs.github.com/en/get-started/quickstart/set-up-git).
+A quick view of the boilerplate entity/model is extracted below
 
-## Fork this repository
+- **Users**
+- **Organization**
+- **Superadmin**
+- **Payment**
+- **PaymentMethod**
+- **PaymentStatus**
+- **BlogPost**
+- **ActivityLog**
+- **Message**
+- **BlogPost**
+- **Invite**
+- **Notification**
 
-Fork this repository by clicking on the fork button on the top of this page.
-This will create a copy of this repository in your account.
+ 
 
-## Clone the repository
+### Relationships
 
-<img align="right" width="300" src="https://firstcontributions.github.io/assets/Readme/clone.png" alt="clone this repository" />
+- Users and Organizations:
 
-Now clone the forked repository to your machine. Go to your GitHub account, open the forked repository, click on the code button and then click the _copy to clipboard_ icon.
+  - One User can belong to multiple Organizations.
+  - One Organization can have many Users.
 
-Open a terminal and run the following git command:
+- Users and Superadmin:
 
-```bash
-git clone "url you just copied"
-```
+  - Users can have roles that grant them Superadmin   privileges.
+  - Superadmins oversee Users and Organizations.
 
-where "url you just copied" (without the quotation marks) is the url to this repository (your fork of this project). See the previous steps to obtain the url.
+- Organization and Payments:
 
-<img align="right" width="300" src="https://firstcontributions.github.io/assets/Readme/copy-to-clipboard.png" alt="copy URL to clipboard" />
+  - An Organization can initiate Payments for services rendered.
+  -- Payments are associated with specific Organizations.
 
-For example:
+- Users and Messages:
 
-```bash
-git clone git@github.com:this-is-you/first-contributions.git
-```
+  - Users can send and receive Messages within the platform.
+  - Messages are linked to specific Users.
 
-where `this-is-you` is your GitHub username. Here you're copying the contents of the first-contributions repository on GitHub to your computer.
+- Organization and Blog Posts:
 
-## Create a branch
+  - Organizations can publish Blog Posts to communicate updates or insights.
+  - Blog Posts are attributed to the publishing Organization.
 
-Change to the repository directory on your computer (if you are not already there):
+- Superadmin and Activity Log:
 
-```bash
-cd first-contributions
-```
+  - Superadmins have access to the Activity Log, documenting user and system actions.
+  - Activity Logs provide transparency and oversight for Superadmins.
 
-Now create a branch using the `git switch` command:
+- Users and Invites:
 
-```bash
-git switch -c your-new-branch-name
-```
+  - Users can generate Invites to invite others to join the platform.
+  - Invites track the status and recipients of invitations.
 
-For example:
+- Users and Notifications:
 
-```bash
-git switch -c add-alonzo-church
-```
+  - Users receive Notifications for important events or updates.
+  - Notifications are triggered by system events related to Users' activities.
 
-### Make Changes
+- Payment and Payment Methods:
 
-Make your changes to the codebase. Ensure your code follows the project's coding standards and guidelines.
+  - Payments can be made using various Payment Methods (e.g., Stripe, PayPal).
+  - Payment Methods specify how transactions are processed.
 
-### Run Tests
+- Payment and Payment Status:
 
-Run the existing tests to ensure your changes do not break anything. If you added new functionality, write corresponding tests.
+  - Payments have statuses indicating whether they are pending, completed, or failed.
+  - Payment Status updates reflect the current state of financial transactions.
 
-```sh
-npm run test
-```
 
-## commit those changes
-
-Now open `Contributors.md` file in a text editor, add your name to it. Don't add it at the beginning or end of the file. Put it anywhere in between. Now, save the file.
-
-<img align="right" width="450" src="https://firstcontributions.github.io/assets/Readme/git-status.png" alt="git status" />
-
-If you go to the project directory and execute the command `git status`, you'll see there are changes.
-
-Add those changes to the branch you just created using the `git add` command:
-
-## Push changes to GitHub
-
-Push your changes using the command `git push`:
-
-```bash
-git push -u origin your-branch-name
-```
-
-replacing `your-branch-name` with the name of the branch you created earlier.
-
-<details>
-<summary> <strong>If you get any errors while pushing, click here:</strong> </summary>
-
-- ### Authentication Error
-     <pre>remote: Support for password authentication was removed on August 13, 2021. Please use a personal access token instead.
-  remote: Please see https://github.blog/2020-12-15-token-authentication-requirements-for-git-operations/ for more information.
-  fatal: Authentication failed for 'https://github.com/<your-username>/first-contributions.git/'</pre>
-  Go to [GitHub's tutorial](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account) on generating and configuring an SSH key to your account.
-
-</details>
-
-## Submit your changes for review into Staging
-
-If you go to your repository on GitHub, you'll see a `Compare & pull request` button. Click on that button.
-
-<img style="float: right;" src="https://firstcontributions.github.io/assets/Readme/compare-and-pull.png" alt="create a pull request" />
-
-Now submit the pull request.
-
-<img style="float: right;" src="https://firstcontributions.github.io/assets/Readme/submit-pull-request.png" alt="submit pull request" />
-
-Soon your changes will be merged into the staging branch of this project. You will get a notification email once the changes have been merged.
-
-## Setup Instructions
-
-### 1. Clone the Repository
-
-First, clone the repository to your local machine using Git.
-
-```sh
-git clone https://github.com/your-username/[app-name].git
-cd [app-name]
-```
-
-### 2. Install Dependencies
-
-Navigate to the project directory and install the required dependencies.
-
-```sh
-npm install
-```
-
-### 3. Configure Environment Variables
-
-Create a `.env` file in the root directory of the project and add your environment-specific variables. You can use the provided `.env.example` file as a reference.
-
-```sh
-cp .env.example .env
-```
-
-Edit the `.env` file to match your environment configuration.
-
-### 4. Compile TypeScript
-
-Compile the TypeScript code to JavaScript.
-
-```sh
-npm run build
-```
-
-### 5. Run the Development Server
-
-Start the development server with the following command. This will also watch for any changes in your code and automatically restart the server.
-
-```sh
-npm run start:dev
-```
-
-### 6. Run the Production Server
-
-To run the application in a production environment, use the following command:
-
-```sh
-npm run start
-```
-
-### 7. Verify the Setup
-
-Open your browser and navigate to `http://localhost:3000/api/v1/` to verify that the application is running correctly.
-
-## Folder Structure
-
-Here's an overview of the project's folder structure:
-
-```
-|--- src
-|    |--- controllers
-          |--- v1
-|    |--- database
-|    |--- interfaces
-|    |--- middlewares
-|    |--- routes
-|         |--- v1
-|    |--- services
-|    |--- utils
-|    |--- server.ts
-|--- .env
-|--- app.ts
-|--- .gitignore
-|--- package.json
-|--- tsconfig.json
-```
-
-## Scripts
-
-Here are some useful npm scripts that you can use during development and production:
-
-- `npm run build`: Compiles the TypeScript code to JavaScript.
-- `npm run start:dev`: Starts the development server with live reloading.
-- `npm run start`: Starts the production server.
-- `npm run test`: Runs the test suite (if available).
-- `npm run lint`: Runs the linter to check for code style issues.
-
-## Additional Resources
-
-- [Node.js Documentation](https://nodejs.org/en/docs/)
-- [TypeScript Documentation](https://www.typescriptlang.org/docs/)
-- [Express Documentation](https://expressjs.com/)
-
-By following these steps, you should have your Node.js and TypeScript application up and running. If you encounter any issues, please refer to the documentation of the respective tools or seek help from the community.
-
-## API Endpoints
-
-All API endpoints can be referenced in the [API Reference](API_REFERENCE.md) document.
-
-## Versioning
-
-This project is versioned to ensure backward compatibility and easy maintenance. The current version is [version].
+For a detailed view, you can access the draw.io file [here](https://drive.google.com/file/d/1bCSuJ6I8GPU-jEiOfVUcaau72-Tv2GRl/view?usp=sharing).
