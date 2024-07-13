@@ -25,7 +25,7 @@ This project uses Swagger/OpenAPI to design the APIs. A minimal list of the API 
 - **GET /users/{id}**: Get user by ID
 
 
-#### For detailed API specifications, refer to the [OpenAPI Specification](https://app.swaggerhub.com/apis/ALAYANDEZAINAB64/Team-superstar_OpenAPI_Specification/1.0.0).
+#### For detailed API specifications, refer to the [OpenAPI Specification](https://app.swaggerhub.com/apis/ZainabAlayande/boilerplate-api/1.0.0).
 
 ## Database Design
 
@@ -104,4 +104,4 @@ A quick view of the boilerplate entity/model is extracted below
   - Payment Status updates reflect the current state of financial transactions.
 
 
-For a detailed view, you can access the draw.io file [here](https://drive.google.com/file/d/1bCSuJ6I8GPU-jEiOfVUcaau72-Tv2GRl/view?usp=sharing).
+For a detailed view, you can access the draw.io file [here](https://viewer.diagrams.net/index.html?tags=%7B%7D&lightbox=1&highlight=0000ff&edit=_blank&layers=1&nav=1&title=Team-superstar.drawio#Uhttps%3A%2F%2Fdrive.google.com%2Fuc%3Fid%3D1bCSuJ6I8GPU-jEiOfVUcaau72-Tv2GRl%26export%3Ddownload#%7B%22pageId%22%3A%22R2lEEEUBdFMjLlhIrx00%22%7D).
