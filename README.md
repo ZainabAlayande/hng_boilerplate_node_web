@@ -4,8 +4,12 @@
 
 This project uses Swagger/OpenAPI to design the APIs. A minimal list of the API description is listed below: 
 
-### API Base url: [here](link-to-swagger-documentation)
+### API Base url
 
+ - Main Server [https://example.com/api/v1](link-to-swagger-documentation)
+ - Staging Server [https://staging.example.com/api/v1]
+
+ 
 ### Endpoints
 
 - **POST /auth/register**: Create a new user.

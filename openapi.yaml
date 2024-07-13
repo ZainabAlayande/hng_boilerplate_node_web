@@ -1,0 +1,584 @@
+openapi: 3.1.0
+info:
+  title: API
+  description: This is a comprehensive API for a full-featured application.
+  version: 1.0.0
+servers:
+  - url: https://example.com/api/v1
+    description: Main (production) server
+  - url: https://staging.example.com/api/v1
+    description: Staging server
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    oauth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://example.com/oauth/authorize
+          tokenUrl: https://example.com/oauth/token
+          scopes:
+            read: Grants read access
+            write: Grants write access
+            admin: Grants access to admin operations
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+    Organization:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        createdBy:
+          type: string
+    Payment:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        amount:
+          type: number
+        status:
+          type: string
+    Notification:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        message:
+          type: string
+        read:
+          type: boolean
+    Message:
+      type: object
+      properties:
+        to:
+          type: string
+        subject:
+          type: string
+        body:
+          type: string
+    Setting:
+      type: object
+      properties:
+        notifications:
+          type: boolean
+        language:
+          type: string
+        region:
+          type: string
+    GDPR:
+      type: object
+      properties:
+        cookies:
+          type: array
+          items:
+            type: string
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: User registered successfully
+  /auth/login:
+    post:
+      summary: Log in a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: User logged in successfully
+  /auth/social:
+    post:
+      summary: Social login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                provider:
+                  type: string
+                token:
+                  type: string
+      responses:
+        '200':
+          description: User logged in successfully
+  /auth/magic-link:
+    post:
+      summary: Magic link login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                email:
+                  type: string
+      responses:
+        '200':
+          description: Magic link sent successfully
+  /auth/change-password:
+    post:
+      summary: Change user password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                oldPassword:
+                  type: string
+                newPassword:
+                  type: string
+      responses:
+        '200':
+          description: Password changed successfully
+  /email/send:
+    post:
+      summary: Send an email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Message'
+      responses:
+        '200':
+          description: Email sent successfully
+  /payments/stripe:
+    post:
+      summary: Process a Stripe payment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                userId:
+                  type: string
+                amount:
+                  type: number
+      responses:
+        '200':
+          description: Payment processed successfully
+  /payments/flutterwave:
+    post:
+      summary: Process a Flutterwave payment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                userId:
+                  type: string
+                amount:
+                  type: number
+      responses:
+        '200':
+          description: Payment processed successfully
+  /payments/lemonsqueezy:
+    post:
+      summary: Process a LemonSqueezy payment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                userId:
+                  type: string
+                amount:
+                  type: number
+      responses:
+        '200':
+          description: Payment processed successfully
+  /users:
+    get:
+      summary: Get a list of users
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A list of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+  /users/{id}:
+    get:
+      summary: Get user by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /organizations:
+    post:
+      summary: Create a new organization
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Organization'
+      responses:
+        '201':
+          description: Organization created successfully
+  /organizations/{id}:
+    get:
+      summary: Get organization by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Organization details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+  /superadmin/users:
+    get:
+      summary: Get all users (Superadmin)
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A list of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+  /superadmin/organizations:
+    get:
+      summary: Get all organizations (Superadmin)
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A list of organizations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Organization'
+  /superadmin/payments:
+    get:
+      summary: Get all payments (Superadmin)
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A list of payments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Payment'
+  /superadmin/activity-log:
+    get:
+      summary: Get activity log (Superadmin)
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Activity log
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    userId:
+                      type: string
+                    action:
+                      type: string
+                    timestamp:
+                      type: string
+  /settings/{id}:
+    get:
+      summary: Get user settings
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User settings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Setting'
+  /settings:
+    post:
+      summary: Update user settings
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Setting'
+      responses:
+        '200':
+          description: Settings updated successfully
+  /profile/{id}:
+    get:
+      summary: Get user profile
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /profile:
+    post:
+      summary: Update user profile
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Profile updated successfully
+  /contact-us:
+    post:
+      summary: Send a contact message
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                message:
+                  type: string
+      responses:
+        '200':
+          description: Message sent successfully
+  /notifications:
+    get:
+      summary: Get user notifications
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A list of notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Notification'
+  /gdpr/{id}:
+    get:
+      summary: Get GDPR settings
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: GDPR settings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GDPR'
+  /gdpr:
+    post:
+      summary: Update GDPR settings
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GDPR'
+      responses:
+        '200':
+          description: GDPR settings updated successfully
+  /api/companies:
+    post:
+      summary: Create a new company
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  type: string
+                address:
+                  type: string
+                email:
+                  type: string
+                phone:
+                  type: string
+                website:
+                  type: string
+      responses:
+        '201':
+          description: Company created successfully
+  /api/companies/{id}:
+    get:
+      summary: Get company by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Company details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  address:
+                    type: string
+                  email:
+                    type: string
+                  phone:
+                    type: string
+                  website:
+                    type: string
+  /api/companiess:
+    get:
+      summary: Get a list of companies
+      responses:
+        '200':
+          description: A list of companies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    address:
+                      type: string
+                    email:
+                      type: string
+                    phone:
+                      type: string
+                    website:
+                      type: string
+  /api/companies/update/{id}:
+    put:
+      summary: Update a company
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  type: string
+                address:
+                  type: string
+                email:
+                  type: string
+                phone:
+                  type: string
+                website:
+                  type: string
+      responses:
+        '200':
+          description: Company updated successfully
+  /api/companies/delete/{id}:
+    delete:
+      summary: Delete a company
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Company deleted successfully
