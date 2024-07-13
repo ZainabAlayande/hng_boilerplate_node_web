@@ -1,13 +1,12 @@
-openapi: 3.1.0
+openapi: 3.0.3
 info:
-  title: API
-  description: This is a comprehensive API for a full-featured application.
+  title: Boilerplate API
+  description: API
   version: 1.0.0
 servers:
-  - url: https://example.com/api/v1
-    description: Main (production) server
-  - url: https://staging.example.com/api/v1
-    description: Staging server
+  - url: https://liveurl.com/api/v1
+    description: production server
+    
 components:
   securitySchemes:
     bearerAuth:
@@ -18,8 +17,8 @@ components:
       type: oauth2
       flows:
         authorizationCode:
-          authorizationUrl: https://example.com/oauth/authorize
-          tokenUrl: https://example.com/oauth/token
+          authorizationUrl: https://liveurl.com/oauth/authorize
+          tokenUrl: https://liveurl.com/oauth/token
           scopes:
             read: Grants read access
             write: Grants write access
@@ -30,70 +29,493 @@ components:
       properties:
         id:
           type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+          minLength: 8
         firstName:
           type: string
         lastName:
           type: string
-        email:
+        role:
           type: string
-        password:
+          enum:
+            - user
+            - admin
+            - superadmin
+        createdAt:
           type: string
-    Organization:
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    Organisation:
       type: object
       properties:
         id:
           type: string
         name:
           type: string
-        createdBy:
+          minLength: 3
+        ownerId:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    Email:
+      type: object
+      properties:
+        to:
+          type: string
+          format: email
+        subject:
+          type: string
+        body:
+          type: string
+        templateId:
           type: string
     Payment:
       type: object
       properties:
         id:
           type: string
-        userId:
-          type: string
         amount:
           type: number
+          format: float
+          minimum: 0.01
+        currency:
+          type: string
+          enum:
+            - USD
+            - EUR
+            - GBP
+            - NGN
         status:
           type: string
-    Notification:
+        provider:
+          type: string
+          enum:
+            - stripe
+            - flutterwave
+            - lemonsqueezy
+        userId:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    ActivityLog:
       type: object
       properties:
         id:
           type: string
         userId:
           type: string
+        action:
+          type: string
+        details:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    Settings:
+      type: object
+      properties:
+        id:
+          type: string
+        key:
+          type: string
+        value:
+          type: string
+        updatedAt:
+          type: string
+          format: date-time
+    Profile:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        bio:
+          type: string
+        location:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    LandingPage:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        content:
+          type: string
+        updatedAt:
+          type: string
+          format: date-time
+    ContactUs:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+          format: email
         message:
           type: string
-        read:
+        createdAt:
+          type: string
+          format: date-time
+    CookieConsent:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        consent:
           type: boolean
-    Message:
+        createdAt:
+          type: string
+          format: date-time
+    Dashboard:
       type: object
       properties:
-        to:
+        id:
           type: string
-        subject:
+        userId:
           type: string
-        body:
-          type: string
-    Setting:
-      type: object
-      properties:
-        notifications:
-          type: boolean
-        language:
-          type: string
-        region:
-          type: string
-    GDPR:
-      type: object
-      properties:
-        cookies:
+        widgets:
           type: array
           items:
             type: string
+        createdAt:
+          type: string
+          format: date-time
+    Waitlist:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+          format: email
+        status:
+          type: string
+          enum:
+            - pending
+            - accepted
+            - rejected
+        createdAt:
+          type: string
+          format: date-time
+    MarketingPage:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        content:
+          type: string
+        updatedAt:
+          type: string
+          format: date-time
+    Invite:
+      type: object
+      properties:
+        id:
+          type: string
+        inviterId:
+          type: string
+        inviteeEmail:
+          type: string
+          format: email
+        status:
+          type: string
+          enum:
+            - pending
+            - accepted
+            - rejected
+        createdAt:
+          type: string
+          format: date-time
+    Widget:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+    WidgetsResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        widgets:
+          type: array
+          items:
+            $ref: '#/components/schemas/Widget'
+    WidgetResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        widget:
+          $ref: '#/components/schemas/Widget'
+    DataItem:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        value:
+          type: string
+    DataListResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataItem'
+    ChartDataResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              label:
+                type: string
+              value:
+                type: number
+    Content:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        body:
+          type: string
+        author:
+          type: string
+          example: John Doe
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    Notification:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        message:
+          type: string
+        recipientId:
+          type: string
+          example: user123
+        read:
+          type: boolean
+          example: false
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    NotificationInput:
+      type: object
+      required:
+        - title
+        - message
+        - recipientId
+      properties:
+        title:
+          type: string
+        message:
+          type: string
+        recipientId:
+          type: string
+        read:
+          type: boolean
+  parameters:
+    userId:
+      name: userId
+      in: path
+      required: true
+      schema:
+        type: string
+    orgId:
+      name: orgId
+      in: path
+      required: true
+      schema:
+        type: string
+    paymentId:
+      name: paymentId
+      in: path
+      required: true
+      schema:
+        type: string
+    logId:
+      name: logId
+      in: path
+      required: true
+      schema:
+        type: string
+    settingsId:
+      name: settingsId
+      in: path
+      required: true
+      schema:
+        type: string
+    profileId:
+      name: profileId
+      in: path
+      required: true
+      schema:
+        type: string
+    pageId:
+      name: pageId
+      in: path
+      required: true
+      schema:
+        type: string
+    contactId:
+      name: contactId
+      in: path
+      required: true
+      schema:
+        type: string
+    consentId:
+      name: consentId
+      in: path
+      required: true
+      schema:
+        type: string
+    dashboardId:
+      name: dashboardId
+      in: path
+      required: true
+      schema:
+        type: string
+    waitlistId:
+      name: waitlistId
+      in: path
+      required: true
+      schema:
+        type: string
+    contentId:
+      name: contentId
+      in: path
+      required: true
+      schema:
+        type: string
+    inviteId:
+      name: inviteId
+      in: path
+      required: true
+      schema:
+        type: string
+    NotificationId:
+      name: notificationId
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: The ID of the notification
+    BlogPostId:
+      name: blogPostId
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: The ID of the blog post
+    InviteLinkId:
+      name: inviteLinkId
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: The ID of the invite link
+    LanguageSettingId:
+      name: languageSettingId
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: The ID of the language setting
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Unauthorized
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Bad Request
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Conflict
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Not Found
 paths:
   /auth/register:
     post:
@@ -103,300 +525,393 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
-      responses:
-        '201':
-          description: User registered successfully
-  /auth/login:
-    post:
-      summary: Log in a user
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
+              type: object
+              required:
+                - email
+                - password
+                - firstName
+                - lastName
               properties:
                 email:
                   type: string
+                  format: email
                 password:
                   type: string
+                  format: password
+                  minLength: 8
+                firstName:
+                  type: string
+                lastName:
+                  type: string
       responses:
-        '200':
-          description: User logged in successfully
-  /auth/social:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /auth/login:
     post:
-      summary: Social login
+      summary: Login a user
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              properties:
-                provider:
-                  type: string
-                token:
-                  type: string
-      responses:
-        '200':
-          description: User logged in successfully
-  /auth/magic-link:
-    post:
-      summary: Magic link login
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
+              type: object
+              required:
+                - email
+                - password
               properties:
                 email:
                   type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
       responses:
         '200':
-          description: Magic link sent successfully
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '401':
+          $ref: '#/components/responses/Unauthorized'
   /auth/change-password:
     post:
-      summary: Change user password
+      summary: Change password
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
+              type: object
+              required:
+                - oldPassword
+                - newPassword
               properties:
                 oldPassword:
                   type: string
+                  format: password
                 newPassword:
                   type: string
+                  format: password
+                  minLength: 8
       responses:
         '200':
           description: Password changed successfully
-  /email/send:
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /auth/social/{provider}:
+    get:
+      summary: Social authentication redirect
+      parameters:
+        - name: provider
+          in: path
+          required: true
+          schema:
+            type: string
+            enum:
+              - google
+              - facebook
+              - twitter
+      responses:
+        '302':
+          description: Redirect to social authentication provider
+  /auth/magic-link:
     post:
-      summary: Send an email
+      summary: Send magic link for authentication
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Message'
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        '200':
+          description: Magic link sent
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /messages/send:
+    post:
+      summary: Send an email
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Email'
       responses:
         '200':
           description: Email sent successfully
-  /payments/stripe:
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /payments/create:
     post:
-      summary: Process a Stripe payment
+      summary: Create a payment
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
+              type: object
+              required:
+                - amount
+                - currency
+                - provider
               properties:
-                userId:
-                  type: string
                 amount:
                   type: number
-      responses:
-        '200':
-          description: Payment processed successfully
-  /payments/flutterwave:
-    post:
-      summary: Process a Flutterwave payment
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              properties:
-                userId:
+                  format: float
+                  minimum: 0.01
+                currency:
                   type: string
-                amount:
-                  type: number
-      responses:
-        '200':
-          description: Payment processed successfully
-  /payments/lemonsqueezy:
-    post:
-      summary: Process a LemonSqueezy payment
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              properties:
-                userId:
+                  enum:
+                    - USD
+                    - EUR
+                    - GBP
+                    - NGN
+                provider:
                   type: string
-                amount:
-                  type: number
+                  enum:
+                    - stripe
+                    - flutterwave
+                    - lemonsqueezy
       responses:
-        '200':
-          description: Payment processed successfully
-  /users:
+        '201':
+          description: Payment created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /users/{userId}:
     get:
-      summary: Get a list of users
+      summary: Get user details
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/userId'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /organisations:
+    post:
+      summary: Create an organisation
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  minLength: 3
+      responses:
+        '201':
+          description: Organisation created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organisation'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /superadmin/users:
+    get:
+      summary: Get all users
       security:
         - bearerAuth: []
       responses:
         '200':
-          description: A list of users
+          description: Successful response
           content:
             application/json:
               schema:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
-  /users/{id}:
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /superadmin/users/{userId}:
     get:
       summary: Get user by ID
       security:
         - bearerAuth: []
       parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
+        - $ref: '#/components/parameters/userId'
       responses:
         '200':
-          description: User details
+          description: Successful response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-  /organizations:
-    post:
-      summary: Create a new organization
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /superadmin/organisations:
+    get:
+      summary: Get all organisations
       security:
         - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Organization'
       responses:
-        '201':
-          description: Organization created successfully
-  /organizations/{id}:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Organisation'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /superadmin/organisations/{orgId}:
     get:
-      summary: Get organization by ID
+      summary: Get organisation by ID
       security:
         - bearerAuth: []
       parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
+        - $ref: '#/components/parameters/orgId'
       responses:
         '200':
-          description: Organization details
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Organization'
-  /superadmin/users:
-    get:
-      summary: Get all users (Superadmin)
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: A list of users
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/User'
-  /superadmin/organizations:
-    get:
-      summary: Get all organizations (Superadmin)
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: A list of organizations
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Organization'
+                $ref: '#/components/schemas/Organisation'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
   /superadmin/payments:
     get:
-      summary: Get all payments (Superadmin)
+      summary: Get all payments
       security:
         - bearerAuth: []
       responses:
         '200':
-          description: A list of payments
+          description: Successful response
           content:
             application/json:
               schema:
                 type: array
                 items:
                   $ref: '#/components/schemas/Payment'
-  /superadmin/activity-log:
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /superadmin/payments/{paymentId}:
     get:
-      summary: Get activity log (Superadmin)
+      summary: Get payment by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/paymentId'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /superadmin/activity-logs:
+    get:
+      summary: Get all activity logs
       security:
         - bearerAuth: []
       responses:
         '200':
-          description: Activity log
+          description: Successful response
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  type: object
-                  properties:
-                    userId:
-                      type: string
-                    action:
-                      type: string
-                    timestamp:
-                      type: string
-  /settings/{id}:
+                  $ref: '#/components/schemas/ActivityLog'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /superadmin/activity-logs/{logId}:
     get:
-      summary: Get user settings
+      summary: Get activity log by ID
       security:
         - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/logId'
       responses:
         '200':
-          description: User settings
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Setting'
+                $ref: '#/components/schemas/ActivityLog'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
   /settings:
-    post:
-      summary: Update user settings
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Setting'
-      responses:
-        '200':
-          description: Settings updated successfully
-  /profile/{id}:
     get:
-      summary: Get user profile
+      summary: Get all settings
       security:
         - bearerAuth: []
       responses:
         '200':
-          description: User profile
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-  /profile:
-    post:
-      summary: Update user profile
+                type: array
+                items:
+                  $ref: '#/components/schemas/Settings'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    put:
+      summary: Update settings
       security:
         - bearerAuth: []
       requestBody:
@@ -404,33 +919,468 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              type: object
+              required:
+                - key
+                - value
       responses:
         '200':
-          description: Profile updated successfully
-  /contact-us:
+          description: Setting updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Settings'        
+  /cookies/consent:
     post:
-      summary: Send a contact message
+      summary: Record GDPR cookie consent
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
+              type: object
+              required:
+                - consent
               properties:
-                name:
-                  type: string
+                consent:
+                  type: boolean
+      responses:
+        '201':
+          description: Consent recorded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CookieConsent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /dashboard:
+    get:
+      summary: Get user's dashboard
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /waitlist:
+    post:
+      summary: Join waitlist
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
                 email:
                   type: string
-                message:
+                  format: email
+      responses:
+        '201':
+          description: Waitlist entry created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Waitlist'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /waitlist/{waitlistId}:
+    get:
+      summary: Get waitlist entry by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/waitlistId'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Waitlist'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /marketing:
+    get:
+      summary: Get all marketing pages
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MarketingPage'
+  /marketing/{pageId}:
+    get:
+      summary: Get marketing page by ID
+      parameters:
+        - $ref: '#/components/parameters/pageId'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarketingPage'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /invites:
+    post:
+      summary: Send an invite
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - inviteeEmail
+              properties:
+                inviteeEmail:
+                  type: string
+                  format: email
+      responses:
+        '201':
+          description: Invite sent successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Invite'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /invites/{inviteId}:
+    get:
+      summary: Get invite by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/inviteId'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Invite'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    
+  /users/{userId}/export:
+    get:
+      summary: Export user data
+      description: Exports all data associated with the specified user.
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the user
+      responses:
+        '200':
+          description: User data exported successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  data:
+                    type: string
+                    description: Base64 encoded user data
+        '400':
+          description: Invalid user ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/BadRequest'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFound'
+  /users/{userId}/widgets:
+    get:
+      summary: List user widgets
+      description: Retrieves a list of widgets associated with the specified user.
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the user
+      responses:
+        '200':
+          description: List of widgets retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WidgetsResponse'
+        '400':
+          description: Invalid user ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/BadRequest'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFound'
+  /users/{userId}/widgets/{widgetId}:
+    get:
+      summary: Get single widget
+      description: Retrieves a single widget associated with the specified user.
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the user
+        - name: widgetId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the widget
+      responses:
+        '200':
+          description: Widget retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WidgetResponse'
+        '400':
+          description: Invalid user ID or widget ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/BadRequest'
+        '404':
+          description: User or widget not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFound'
+  /data:
+    get:
+      summary: List other data with search and sorting
+      description: Retrieves a list of data with optional search and sorting.
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Search query
+        - name: sort
+          in: query
+          schema:
+            type: string
+          description: Sort by field
+        - name: order
+          in: query
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+          description: Order of sorting
+      responses:
+        '200':
+          description: List of data retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataListResponse'
+        '400':
+          description: Invalid query parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/BadRequest'
+  /charts:
+    get:
+      summary: Get chart data
+      description: Retrieves data for charts.
+      responses:
+        '200':
+          description: Chart data retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChartDataResponse'
+        '400':
+          description: Error retrieving chart data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/BadRequest'
+  /content:
+    get:
+      summary: List all content
+      tags:
+        - Content
+      responses:
+        '200':
+          description: A list of content
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Content'
+    post:
+      summary: Create new content
+      tags:
+        - Content
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - body
+              properties:
+                title:
+                  type: string
+                body:
+                  type: string
+      responses:
+        '201':
+          description: Content created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Content'
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/BadRequest'
+  /content/{contentId}:
+    get:
+      summary: Get content by ID
+      tags:
+        - Content
+      parameters:
+        - $ref: '#/components/parameters/contentId'
+      responses:
+        '200':
+          description: Content details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Content'
+        '404':
+          description: Content not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFound'
+    put:
+      summary: Update content by ID
+      tags:
+        - Content
+      parameters:
+        - $ref: '#/components/parameters/contentId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                body:
                   type: string
       responses:
         '200':
-          description: Message sent successfully
+          description: Content updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Content'
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/BadRequest'
+        '404':
+          description: Content not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFound'
+    delete:
+      summary: Delete content by ID
+      tags:
+        - Content
+      parameters:
+        - $ref: '#/components/parameters/contentId'
+      responses:
+        '204':
+          description: Content deleted successfully
+        '404':
+          description: Content not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFound'
+                
+  /contact-us:
+    get:
+      summary: Submit a Contact Us message
+      tags:
+      - ContactUs
+        
+      responses:
+        '200':
+          description: Contact Us message received
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactUs'
+                
   /notifications:
     get:
-      summary: Get user notifications
-      security:
-        - bearerAuth: []
+      summary: List all notifications
+      tags:
+        - Notifications
       responses:
         '200':
           description: A list of notifications
@@ -440,145 +1390,3 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Notification'
-  /gdpr/{id}:
-    get:
-      summary: Get GDPR settings
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: GDPR settings
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GDPR'
-  /gdpr:
-    post:
-      summary: Update GDPR settings
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/GDPR'
-      responses:
-        '200':
-          description: GDPR settings updated successfully
-  /api/companies:
-    post:
-      summary: Create a new company
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              properties:
-                name:
-                  type: string
-                address:
-                  type: string
-                email:
-                  type: string
-                phone:
-                  type: string
-                website:
-                  type: string
-      responses:
-        '201':
-          description: Company created successfully
-  /api/companies/{id}:
-    get:
-      summary: Get company by ID
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Company details
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                  name:
-                    type: string
-                  address:
-                    type: string
-                  email:
-                    type: string
-                  phone:
-                    type: string
-                  website:
-                    type: string
-  /api/companiess:
-    get:
-      summary: Get a list of companies
-      responses:
-        '200':
-          description: A list of companies
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                    name:
-                      type: string
-                    address:
-                      type: string
-                    email:
-                      type: string
-                    phone:
-                      type: string
-                    website:
-                      type: string
-  /api/companies/update/{id}:
-    put:
-      summary: Update a company
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              properties:
-                name:
-                  type: string
-                address:
-                  type: string
-                email:
-                  type: string
-                phone:
-                  type: string
-                website:
-                  type: string
-      responses:
-        '200':
-          description: Company updated successfully
-  /api/companies/delete/{id}:
-    delete:
-      summary: Delete a company
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Company deleted successfully

@@ -9,7 +9,7 @@ This project uses Swagger/OpenAPI to design the APIs. A minimal list of the API 
  - Main Server [https://example.com/api/v1](link-to-swagger-documentation)
  - Staging Server [https://staging.example.com/api/v1]
 
- 
+
 ### Endpoints
 
 - **POST /auth/register**: Create a new user.
@@ -25,7 +25,7 @@ This project uses Swagger/OpenAPI to design the APIs. A minimal list of the API 
 - **GET /users/{id}**: Get user by ID
 
 
-#### For detailed API specifications, refer to the [OpenAPI Specification](link-to-openapi-spec).
+#### For detailed API specifications, refer to the [OpenAPI Specification](https://app.swaggerhub.com/apis/ALAYANDEZAINAB64/Team-superstar_OpenAPI_Specification/1.0.0).
 
 ## Database Design
 
